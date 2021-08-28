@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"strings"
+	"time"
 )
 
 type Client struct {
@@ -12,11 +13,16 @@ type Client struct {
 	Name string
 }
 
+func log(msg string) {
+	start := time.Now()
+	fmt.Println(start.String() + " " + msg)
+}
+
 func main() {
 	server := createServer()
 	pipe, errListen := net.Listen(server.Network, server.Port)
 	handleError(errListen, true)
-	fmt.Println("server started")
+	log("Server started")
 
 	var clients []Client
 
@@ -24,7 +30,7 @@ func main() {
 		conn, errAccept := pipe.Accept()
 		handleError(errAccept, true)
 
-		fmt.Println("New client from", conn.RemoteAddr())
+		log("New client from " + conn.RemoteAddr().String())
 
 		go func() {
 			buf := bufio.NewReader(conn)
@@ -32,14 +38,14 @@ func main() {
 			handleError(nameErr, false)
 			currentClient := Client{Name: strings.TrimSuffix(name, "\n"), Conn: conn}
 			clients = append(clients, currentClient)
-			println("Client picked username " + currentClient.Name)
+			log("Client picked username " + currentClient.Name)
 			for {
 				msg, msgErr := buf.ReadString('\n')
 				if msgErr != nil {
-					println(currentClient.Name + " disconnected")
+					log(currentClient.Name + " disconnected")
 					break
 				}
-				print("Message from " + currentClient.Name + ": " + msg)
+				log("Message from " + currentClient.Name + ": " + strings.TrimSuffix(msg, "\n"))
 
 				for _, c := range clients {
 					if c.Name != currentClient.Name {
