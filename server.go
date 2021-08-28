@@ -24,7 +24,7 @@ func main() {
 		conn, errAccept := pipe.Accept()
 		handleError(errAccept, true)
 
-		fmt.Println("Un client est connecté depuis", conn.RemoteAddr())
+		fmt.Println("New client from", conn.RemoteAddr())
 
 		go func() {
 			buf := bufio.NewReader(conn)
