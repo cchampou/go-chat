@@ -24,6 +24,7 @@ func main() {
 	remoteBuf := bufio.NewReader(conn)
 
 	// Ask for username
+	print("Pick a username: ")
 	name, errInput := localBuf.ReadString('\n')
 	handleError(errInput, true)
 	_, _ = conn.Write([]byte(name))
