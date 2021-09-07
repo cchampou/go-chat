@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ type Server struct {
 	Network string
 }
 
-func createServer() Server {
+func CreateServer() Server {
 	server := Server{Port: ":5000", Network: "tcp"}
 	return server
 }
 
-func handleError(err error, fatal bool) {
+func HandleError(err error, fatal bool) {
 	if err != nil {
 		fmt.Println(err)
 		if fatal {

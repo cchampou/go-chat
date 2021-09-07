@@ -6,6 +6,8 @@ import (
 	"net"
 	"strings"
 	"time"
+
+	"cchampou.me/utils"
 )
 
 type Client struct {
@@ -19,23 +21,23 @@ func log(msg string) {
 }
 
 func main() {
-	server := createServer()
+	server := utils.CreateServer()
 	pipe, errListen := net.Listen(server.Network, server.Port)
-	handleError(errListen, true)
+	utils.HandleError(errListen, true)
 	log("Server started")
 
 	var clients []Client
 
 	for {
 		conn, errAccept := pipe.Accept()
-		handleError(errAccept, true)
+		utils.HandleError(errAccept, true)
 
 		log("New client from " + conn.RemoteAddr().String())
 
 		go func() {
 			buf := bufio.NewReader(conn)
 			name, nameErr := buf.ReadString('\n')
-			handleError(nameErr, false)
+			utils.HandleError(nameErr, false)
 			currentClient := Client{Name: strings.TrimSuffix(name, "\n"), Conn: conn}
 			clients = append(clients, currentClient)
 			log("Client picked username " + currentClient.Name)

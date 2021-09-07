@@ -6,16 +6,18 @@ import (
 	"net"
 	"os"
 	"sync"
+
+	"cchampou.me/utils"
 )
 
 func main() {
 
 	var wg sync.WaitGroup
 
-	server := createServer()
+	server := utils.CreateServer()
 
 	conn, errDial := net.Dial(server.Network, server.Port)
-	handleError(errDial, true)
+	utils.HandleError(errDial, true)
 	fmt.Println("Client connected")
 
 	wg.Add(2)
@@ -26,7 +28,7 @@ func main() {
 	// Ask for username
 	print("Pick a username: ")
 	name, errInput := localBuf.ReadString('\n')
-	handleError(errInput, true)
+	utils.HandleError(errInput, true)
 	_, _ = conn.Write([]byte(name))
 
 	// Goroutine for user input
@@ -34,7 +36,7 @@ func main() {
 		defer wg.Done()
 		for {
 			msg, errMsg := localBuf.ReadString('\n')
-			handleError(errMsg, true)
+			utils.HandleError(errMsg, true)
 			_, _ = conn.Write([]byte(msg))
 		}
 	}()
@@ -44,7 +46,7 @@ func main() {
 		defer wg.Done()
 		for {
 			serverMsg, errServerMsg := remoteBuf.ReadString('\n')
-			handleError(errServerMsg, true)
+			utils.HandleError(errServerMsg, true)
 			print(serverMsg)
 		}
 	}()
